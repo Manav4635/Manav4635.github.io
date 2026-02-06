@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Be My Valentine?</title>
+  <style>
+    :root{
+      --pink:#ff4d8d;
+      --pink2:#ff85b3;
+      --bg1:#fff0f6;
+      --bg2:#fff7fb;
+      --text:#2b2b2b;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--text);
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      background: radial-gradient(circle at 20% 20%, var(--bg1), var(--bg2));
+      overflow:hidden;
+    }
+
+    /* floating hearts background */
+    .heart{
+      position:absolute;
+      width:18px; height:18px;
+      background: var(--pink2);
+      transform: rotate(45deg);
+      opacity:.25;
+      animation: floatUp 9s linear infinite;
+      border-radius:4px;
+    }
+    .heart::before,.heart::after{
+      content:"";
+      position:absolute;
+      width:18px; height:18px;
+      background: var(--pink2);
+      border-radius:50%;
+    }
+    .heart::before{ left:-9px; top:0; }
+    .heart::after{ left:0; top:-9px; }
+    @keyframes floatUp{
+      from { transform: translateY(30vh) rotate(45deg); }
+      to   { transform: translateY(-140vh) rotate(45deg); }
+    }
+
+    .card{
+      width:min(520px, 100%);
+      background:white;
+      border-radius:24px;
+      box-shadow: 0 18px 50px rgba(255,77,141,.18);
+      padding:22px;
+      text-align:center;
+      position:relative;
+      z-index:2;
+    }
+    .imgWrap{
+      width:100%;
+      aspect-ratio: 16 / 10;
+      border-radius:18px;
+      overflow:hidden;
+      background: #ffe3ee;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border: 2px solid rgba(255,77,141,.15);
+    }
+    .imgWrap img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+
+    h1{
+      margin:16px 0 6px;
+      font-size: clamp(22px, 4.5vw, 34px);
+      line-height:1.1;
+    }
+    p{
+      margin:0 0 16px;
+      opacity:.85;
+    }
+
+    .buttons{
+      display:flex;
+      gap:12px;
+      justify-content:center;
+      flex-wrap:wrap;
+      margin-top:10px;
+      position:relative;
+      height:64px;
+    }
+    button{
+      border:0;
+      padding:14px 20px;
+      border-radius:999px;
+      font-size:16px;
+      font-weight:700;
+      cursor:pointer;
+      transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
+      user-select:none;
+      min-width:120px;
+    }
+    #yesBtn{
+      background: linear-gradient(135deg, var(--pink), var(--pink2));
+      color:white;
+      box-shadow: 0 10px 22px rgba(255,77,141,.35);
+    }
+    #yesBtn:hover{ transform: translateY(-1px) scale(1.02); }
+    #noBtn{
+      background:#f2f2f2;
+      color:#444;
+      box-shadow: 0 8px 18px rgba(0,0,0,.06);
+      position:relative;
+    }
+    #noBtn:hover{ transform: translateY(-1px); }
+
+    .result{
+      margin-top:16px;
+      font-size:18px;
+      font-weight:700;
+      min-height:28px;
+    }
+    .tiny{
+      margin-top:10px;
+      font-size:12px;
+      opacity:.65;
+    }
+
+    /* confetti-ish */
+    .pop{
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      overflow:hidden;
+      border-radius:24px;
+    }
+    .dot{
+      position:absolute;
+      width:10px; height:10px;
+      border-radius:50%;
+      animation: pop 900ms ease-out forwards;
+      opacity:.9;
+    }
+    @keyframes pop{
+      from{ transform: translate(0,0) scale(1); }
+      to{ transform: translate(var(--dx), var(--dy)) scale(0.2); opacity:0; }
+    }
+
+    a { color: var(--pink); text-decoration: none; font-weight: 700; }
+  </style>
+</head>
+<body>
+
+  <!-- hearts -->
+  <div class="heart" style="left:8%;  top:95%; animation-delay:0s;"></div>
+  <div class="heart" style="left:22%; top:110%; animation-delay:2s;"></div>
+  <div class="heart" style="left:40%; top:100%; animation-delay:1s;"></div>
+  <div class="heart" style="left:62%; top:108%; animation-delay:3s;"></div>
+  <div class="heart" style="left:78%; top:98%;  animation-delay:1.6s;"></div>
+  <div class="heart" style="left:90%; top:115%; animation-delay:2.7s;"></div>
+
+  <main class="card" aria-live="polite">
+    <div class="pop" id="pop"></div>
+
+    <div class="imgWrap">
+      <!-- Replace this image URL with any cute image you want -->
+      <img alt="Cute valentines image"
+           src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=1200&q=80">
+    </div>
+
+    <h1 id="title">Will you be my Valentine? 💖</h1>
+    <p id="subtitle">I made this little page just for you.</p>
+
+    <div class="buttons" id="btnArea">
+      <button id="yesBtn">Yes 😍</button>
+      <button id="noBtn">No 🙈</button>
+    </div>
+
+    <div class="result" id="result"></div>
+    <div class="tiny">Tip: You can change the name/message in the code.</div>
+  </main>
+
+  <script>
+    const yesBtn = document.getElementById("yesBtn");
+    const noBtn  = document.getElementById("noBtn");
+    const result = document.getElementById("result");
+    const popBox = document.getElementById("pop");
+    const title  = document.getElementById("title");
+    const subtitle = document.getElementById("subtitle");
+    const btnArea = document.getElementById("btnArea");
+
+    // Personalize these:
+    const herName = "❤️"; // put her name like "Aisha" if you want
+    const yesMessage = `YAY!! ${herName} 💞 You just made my day. Happy Valentine’s!`;
+    const noMessage  = `Okay okay 😅 I’ll ask again later...`;
+
+    function popConfetti() {
+      const dots = 26;
+      for (let i = 0; i < dots; i++) {
+        const d = document.createElement("div");
+        d.className = "dot";
+        const x = 30 + Math.random() * 80; // start around center area
+        const y = 80 + Math.random() * 20;
+        d.style.left = x + "%";
+        d.style.top  = y + "%";
+
+        // random movement
+        const dx = (Math.random() * 260 - 130) + "px";
+        const dy = (Math.random() * 240 - 180) + "px";
+        d.style.setProperty("--dx", dx);
+        d.style.setProperty("--dy", dy);
+
+        // random color (no library)
+        const colors = ["#ff4d8d","#ff85b3","#ffd1e3","#ffcc66","#a7f3d0","#93c5fd"];
+        d.style.background = colors[Math.floor(Math.random()*colors.length)];
+
+        popBox.appendChild(d);
+        setTimeout(() => d.remove(), 950);
+      }
+    }
+
+    yesBtn.addEventListener("click", () => {
+      title.textContent = "It’s a date!! 💘";
+      subtitle.textContent = "I’m smiling so hard right now.";
+      result.textContent = yesMessage;
+      popConfetti();
+
+      // disable the "No" button so the moment stays cute
+      noBtn.disabled = true;
+      noBtn.style.opacity = 0.5;
+      noBtn.style.cursor = "not-allowed";
+    });
+
+    // Make the "No" button dodge the cursor/taps (playful)
+    function moveNoButton() {
+      const area = btnArea.getBoundingClientRect();
+      const btn  = noBtn.getBoundingClientRect();
+
+      // keep inside the button area
+      const maxX = area.width  - btn.width;
+      const maxY = area.height - btn.height;
+
+      const x = Math.random() * maxX;
+      const y = Math.random() * maxY;
+
+      noBtn.style.position = "absolute";
+      noBtn.style.left = x + "px";
+      noBtn.style.top  = y + "px";
+    }
+
+    // desktop hover
+    noBtn.addEventListener("mouseenter", moveNoButton);
+    // mobile tap
+    noBtn.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+      moveNoButton();
+    }, { passive: false });
+
+    // If they somehow click it
+    noBtn.addEventListener("click", () => {
+      result.textContent = noMessage;
+      moveNoButton();
+    });
+  </script>
+</body>
+</html>
