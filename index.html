@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Be My Valentine?</title>
+
   <style>
     :root{
       --pink:#ff4d8d;
@@ -11,7 +12,10 @@
       --bg1:#fff0f6;
       --bg2:#fff7fb;
       --text:#2b2b2b;
+      --card:#ffffff;
+      --shadow: 0 18px 50px rgba(255,77,141,.18);
     }
+
     *{box-sizing:border-box}
     body{
       margin:0;
@@ -26,40 +30,61 @@
       overflow:hidden;
     }
 
-    /* floating hearts background */
-    .heart{
-      position:absolute;
-      width:18px; height:18px;
-      background: var(--pink2);
-      transform: rotate(45deg);
-      opacity:.25;
-      animation: floatUp 9s linear infinite;
-      border-radius:4px;
+    /* ===== Heart Rain ===== */
+    #heartRain{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      z-index:0;
+      overflow:hidden;
     }
-    .heart::before,.heart::after{
+    .rainHeart{
+      position:absolute;
+      top:-40px;
+      width:18px; height:18px;
+      background: rgba(255,133,179,.55);
+      transform: rotate(45deg);
+      border-radius:4px;
+      animation: fall linear infinite;
+      filter: drop-shadow(0 4px 8px rgba(255,77,141,.18));
+    }
+    .rainHeart::before,.rainHeart::after{
       content:"";
       position:absolute;
       width:18px; height:18px;
-      background: var(--pink2);
+      background: rgba(255,133,179,.55);
       border-radius:50%;
     }
-    .heart::before{ left:-9px; top:0; }
-    .heart::after{ left:0; top:-9px; }
-    @keyframes floatUp{
-      from { transform: translateY(30vh) rotate(45deg); }
-      to   { transform: translateY(-140vh) rotate(45deg); }
+    .rainHeart::before{ left:-9px; top:0; }
+    .rainHeart::after{ left:0; top:-9px; }
+
+    @keyframes fall{
+      from { transform: translateY(-60px) rotate(45deg); opacity:.0; }
+      10%  { opacity: .95; }
+      to   { transform: translateY(120vh) rotate(45deg); opacity:.0; }
     }
 
+    /* ===== Main Card ===== */
     .card{
-      width:min(520px, 100%);
-      background:white;
+      width:min(820px, 100%);
+      background:var(--card);
       border-radius:24px;
-      box-shadow: 0 18px 50px rgba(255,77,141,.18);
+      box-shadow: var(--shadow);
       padding:22px;
-      text-align:center;
       position:relative;
       z-index:2;
     }
+
+    .topRow{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:16px;
+      align-items:stretch;
+    }
+    @media (max-width: 780px){
+      .topRow{ grid-template-columns: 1fr; }
+    }
+
     .imgWrap{
       width:100%;
       aspect-ratio: 16 / 10;
@@ -70,6 +95,7 @@
       align-items:center;
       justify-content:center;
       border: 2px solid rgba(255,77,141,.15);
+      position:relative;
     }
     .imgWrap img{
       width:100%;
@@ -78,35 +104,119 @@
       display:block;
     }
 
-    h1{
-      margin:16px 0 6px;
-      font-size: clamp(22px, 4.5vw, 34px);
-      line-height:1.1;
-    }
-    p{
-      margin:0 0 16px;
-      opacity:.85;
+    .rightPanel{
+      background: linear-gradient(180deg, rgba(255,77,141,.08), rgba(255,133,179,.06));
+      border: 2px solid rgba(255,77,141,.10);
+      border-radius:18px;
+      padding:14px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
     }
 
+    h1{
+      margin:10px 0 6px;
+      font-size: clamp(22px, 4.5vw, 34px);
+      line-height:1.1;
+      text-align:center;
+    }
+    .subtitle{
+      margin:0 0 10px;
+      opacity:.85;
+      text-align:center;
+    }
+
+    /* ===== Fake compatibility loader (Idea 9) ===== */
+    .loaderBox{
+      background:white;
+      border-radius:16px;
+      padding:12px;
+      border:1px solid rgba(0,0,0,.06);
+    }
+    .loaderTitle{
+      font-weight:800;
+      margin:0 0 8px;
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:center;
+    }
+    .bar{
+      height:12px;
+      border-radius:999px;
+      background: rgba(0,0,0,.06);
+      overflow:hidden;
+    }
+    .bar > div{
+      height:100%;
+      width:0%;
+      border-radius:999px;
+      background: linear-gradient(135deg, var(--pink), var(--pink2));
+      transition: width .2s ease;
+    }
+    .loaderNote{
+      font-size:12px;
+      opacity:.72;
+      margin-top:8px;
+    }
+
+    /* ===== Polaroid gallery (Idea 6) ===== */
+    .polaroids{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:10px;
+    }
+    @media (max-width: 780px){
+      .polaroids{ grid-template-columns: repeat(2, 1fr); }
+    }
+    .polaroid{
+      background:white;
+      border-radius:14px;
+      padding:8px 8px 14px;
+      box-shadow: 0 14px 30px rgba(0,0,0,.08);
+      border:1px solid rgba(0,0,0,.06);
+      transform: rotate(var(--r));
+      transition: transform .15s ease;
+    }
+    .polaroid:hover{
+      transform: rotate(var(--r)) translateY(-2px) scale(1.01);
+    }
+    .polaroid img{
+      width:100%;
+      aspect-ratio: 1 / 1;
+      object-fit:cover;
+      border-radius:10px;
+      display:block;
+      background:#f3f3f3;
+    }
+    .cap{
+      margin-top:8px;
+      font-size:12px;
+      font-weight:800;
+      opacity:.85;
+      text-align:center;
+    }
+
+    /* ===== Buttons ===== */
     .buttons{
       display:flex;
       gap:12px;
       justify-content:center;
       flex-wrap:wrap;
-      margin-top:10px;
+      margin-top:14px;
       position:relative;
-      height:64px;
+      height:70px;
     }
     button{
       border:0;
       padding:14px 20px;
       border-radius:999px;
       font-size:16px;
-      font-weight:700;
+      font-weight:800;
       cursor:pointer;
       transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
       user-select:none;
-      min-width:120px;
+      min-width:140px;
     }
     #yesBtn{
       background: linear-gradient(135deg, var(--pink), var(--pink2));
@@ -120,64 +230,130 @@
       box-shadow: 0 8px 18px rgba(0,0,0,.06);
       position:relative;
     }
-    #noBtn:hover{ transform: translateY(-1px); }
+
+    /* sound toggle */
+    .soundRow{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-top:8px;
+      padding:10px 12px;
+      background: rgba(255,255,255,.7);
+      border-radius:14px;
+      border:1px solid rgba(0,0,0,.06);
+    }
+    .soundRow small{ opacity:.75; }
+    .toggle{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      font-weight:800;
+    }
+    .toggle input{ transform: scale(1.15); }
 
     .result{
-      margin-top:16px;
+      margin-top:12px;
       font-size:18px;
-      font-weight:700;
+      font-weight:900;
       min-height:28px;
-    }
-    .tiny{
-      margin-top:10px;
-      font-size:12px;
-      opacity:.65;
+      text-align:center;
     }
 
-    /* confetti-ish */
-    .pop{
-      position:absolute;
+    .tiny{
+      margin-top:8px;
+      font-size:12px;
+      opacity:.65;
+      text-align:center;
+    }
+
+    /* ===== Fireworks/confetti (Idea 11) ===== */
+    .fxLayer{
+      position:fixed;
       inset:0;
       pointer-events:none;
+      z-index:5;
       overflow:hidden;
-      border-radius:24px;
     }
-    .dot{
+    .spark{
       position:absolute;
       width:10px; height:10px;
       border-radius:50%;
-      animation: pop 900ms ease-out forwards;
-      opacity:.9;
+      animation: burst 900ms ease-out forwards;
+      opacity:.95;
+      filter: drop-shadow(0 6px 10px rgba(0,0,0,.12));
     }
-    @keyframes pop{
+    @keyframes burst{
       from{ transform: translate(0,0) scale(1); }
       to{ transform: translate(var(--dx), var(--dy)) scale(0.2); opacity:0; }
     }
-
-    a { color: var(--pink); text-decoration: none; font-weight: 700; }
   </style>
 </head>
-<body>
 
-  <!-- hearts -->
-  <div class="heart" style="left:8%;  top:95%; animation-delay:0s;"></div>
-  <div class="heart" style="left:22%; top:110%; animation-delay:2s;"></div>
-  <div class="heart" style="left:40%; top:100%; animation-delay:1s;"></div>
-  <div class="heart" style="left:62%; top:108%; animation-delay:3s;"></div>
-  <div class="heart" style="left:78%; top:98%;  animation-delay:1.6s;"></div>
-  <div class="heart" style="left:90%; top:115%; animation-delay:2.7s;"></div>
+<body>
+  <!-- Heart Rain -->
+  <div id="heartRain"></div>
+
+  <!-- Effects layer -->
+  <div class="fxLayer" id="fx"></div>
 
   <main class="card" aria-live="polite">
-    <div class="pop" id="pop"></div>
 
-    <div class="imgWrap">
-      <!-- Replace this image URL with any cute image you want -->
-      <img alt="Cute valentines image"
-           src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=1200&q=80">
+    <div class="topRow">
+      <!-- Main cute image -->
+      <div class="imgWrap">
+        <!-- Change this src to any image URL OR your own uploaded image -->
+        <img alt="Cute valentines image"
+             src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=1400&q=80">
+      </div>
+
+      <!-- Right panel: compatibility + polaroids -->
+      <div class="rightPanel">
+
+        <!-- Compatibility loader -->
+        <div class="loaderBox" id="loaderBox">
+          <div class="loaderTitle">
+            <span>Calculating compatibility…</span>
+            <span id="pct">0%</span>
+          </div>
+          <div class="bar"><div id="barFill"></div></div>
+          <div class="loaderNote" id="loaderNote">Please do not panic. Science is happening.</div>
+        </div>
+
+        <!-- Polaroids -->
+        <div class="polaroids">
+          <!-- Replace these images with YOUR photos (see instructions below) -->
+          <div class="polaroid" style="--r:-3deg">
+            <img src="photos/pic1.jpg" alt="memory 1" onerror="this.src='https://picsum.photos/300?random=11'">
+            <div class="cap">little moments</div>
+          </div>
+          <div class="polaroid" style="--r:2deg">
+            <img src="photos/pic2.jpg" alt="memory 2" onerror="this.src='https://picsum.photos/300?random=12'">
+            <div class="cap">big smiles</div>
+          </div>
+          <div class="polaroid" style="--r:-1deg">
+            <img src="photos/pic3.jpg" alt="memory 3" onerror="this.src='https://picsum.photos/300?random=13'">
+            <div class="cap">our vibe</div>
+          </div>
+        </div>
+
+        <!-- Heartbeat sound toggle -->
+        <div class="soundRow">
+          <div>
+            <div style="font-weight:900;">Heartbeat mode 💓</div>
+            <small>(If it doesn’t play, tap the checkbox once)</small>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" id="soundToggle" checked />
+            On
+          </label>
+        </div>
+
+      </div>
     </div>
 
     <h1 id="title">Will you be my Valentine? 💖</h1>
-    <p id="subtitle">I made this little page just for you.</p>
+    <p class="subtitle" id="subtitle">I made this little page just for you.</p>
 
     <div class="buttons" id="btnArea">
       <button id="yesBtn">Yes 😍</button>
@@ -185,67 +361,155 @@
     </div>
 
     <div class="result" id="result"></div>
-    <div class="tiny">Tip: You can change the name/message in the code.</div>
+    <div class="tiny">Tip: Add your photos by uploading them into a folder called <b>photos</b> in this repo.</div>
+
+    <!-- Heartbeat audio (Idea 3). Put heartbeat.mp3 in repo root OR use a direct URL -->
+    <audio id="heartbeat" loop preload="auto">
+      <source src="heartbeat.mp3" type="audio/mpeg">
+    </audio>
   </main>
 
   <script>
+    // ======= CONFIG YOU CAN EDIT =======
+    const herName = ""; // e.g. "Aisha"
+    const yesMessage = `YAY!! ${herName ? herName + " " : ""}💞 You just made my day. Happy Valentine’s!`;
+    const noStages = [
+      "No 🙈",
+      "Maybe… 😳",
+      "Hmm… 🤔",
+      "Are you sure? 🥺",
+      "Ok fine… YES 😍"
+    ];
+    // ===================================
+
     const yesBtn = document.getElementById("yesBtn");
     const noBtn  = document.getElementById("noBtn");
     const result = document.getElementById("result");
-    const popBox = document.getElementById("pop");
     const title  = document.getElementById("title");
     const subtitle = document.getElementById("subtitle");
     const btnArea = document.getElementById("btnArea");
 
-    // Personalize these:
-    const herName = "❤️"; // put her name like "Aisha" if you want
-    const yesMessage = `YAY!! ${herName} 💞 You just made my day. Happy Valentine’s!`;
-    const noMessage  = `Okay okay 😅 I’ll ask again later...`;
+    // Loader elements (Idea 9)
+    const pct = document.getElementById("pct");
+    const barFill = document.getElementById("barFill");
+    const loaderNote = document.getElementById("loaderNote");
 
-    function popConfetti() {
-      const dots = 26;
-      for (let i = 0; i < dots; i++) {
+    // Audio (Idea 3)
+    const heartbeat = document.getElementById("heartbeat");
+    const soundToggle = document.getElementById("soundToggle");
+
+    // FX (Idea 11)
+    const fx = document.getElementById("fx");
+
+    // Heart rain
+    const heartRain = document.getElementById("heartRain");
+
+    // ---- Heart Rain generator ----
+    function spawnRainHeart(){
+      const h = document.createElement("div");
+      h.className = "rainHeart";
+
+      const left = Math.random() * 100; // %
+      const size = 10 + Math.random() * 18; // px
+      const dur  = 3.5 + Math.random() * 4.5; // seconds
+      const drift = (Math.random() * 60 - 30); // little side drift
+
+      h.style.left = left + "%";
+      h.style.width = size + "px";
+      h.style.height = size + "px";
+      h.style.animationDuration = dur + "s";
+      h.style.transform = `translateX(${drift}px) rotate(45deg)`;
+
+      // vary opacity slightly
+      h.style.opacity = (0.25 + Math.random() * 0.65).toFixed(2);
+
+      heartRain.appendChild(h);
+      setTimeout(() => h.remove(), (dur + 0.2) * 1000);
+    }
+    // spawn a steady rain
+    setInterval(spawnRainHeart, 180);
+    // initial burst
+    for(let i=0;i<20;i++) setTimeout(spawnRainHeart, i*80);
+
+    // ---- Compatibility loader (Idea 9) ----
+    function runLoader(){
+      let p = 0;
+      const notes = [
+        "Collecting adorable evidence…",
+        "Running romance algorithm…",
+        "Cross-checking snack compatibility…",
+        "Finalizing results…"
+      ];
+      let noteIdx = 0;
+
+      const t = setInterval(() => {
+        p += Math.floor(2 + Math.random()*6);
+        if (p > 100) p = 100;
+        pct.textContent = p + "%";
+        barFill.style.width = p + "%";
+
+        if (p % 25 < 6 && noteIdx < notes.length){
+          loaderNote.textContent = notes[noteIdx++];
+        }
+
+        if (p === 100){
+          clearInterval(t);
+          loaderNote.textContent = "MATCH: 100% ✅ (This is scientifically confirmed.)";
+        }
+      }, 120);
+    }
+    runLoader();
+
+    // ---- Audio handling (Idea 3) ----
+    async function tryPlayHeartbeat(){
+      if(!soundToggle.checked) return;
+      try{
+        await heartbeat.play();
+      }catch(e){
+        // autoplay may be blocked until user interacts
+      }
+    }
+    // Attempt on load
+    window.addEventListener("load", tryPlayHeartbeat);
+    // If user toggles sound
+    soundToggle.addEventListener("change", async () => {
+      if(soundToggle.checked){
+        await tryPlayHeartbeat();
+      }else{
+        heartbeat.pause();
+        heartbeat.currentTime = 0;
+      }
+    });
+    // If user taps anywhere, try again (helps on iOS)
+    document.addEventListener("click", tryPlayHeartbeat, { once:false });
+
+    // ---- Fireworks/confetti burst (Idea 11) ----
+    function fireworksBurst(x, y){
+      const dots = 42;
+      const colors = ["#ff4d8d","#ff85b3","#ffd1e3","#ffcc66","#a7f3d0","#93c5fd","#c4b5fd"];
+      for(let i=0;i<dots;i++){
         const d = document.createElement("div");
-        d.className = "dot";
-        const x = 30 + Math.random() * 80; // start around center area
-        const y = 80 + Math.random() * 20;
-        d.style.left = x + "%";
-        d.style.top  = y + "%";
-
-        // random movement
-        const dx = (Math.random() * 260 - 130) + "px";
-        const dy = (Math.random() * 240 - 180) + "px";
+        d.className = "spark";
+        d.style.left = x + "px";
+        d.style.top  = y + "px";
+        d.style.background = colors[Math.floor(Math.random()*colors.length)];
+        const dx = (Math.random()*520 - 260) + "px";
+        const dy = (Math.random()*420 - 240) + "px";
         d.style.setProperty("--dx", dx);
         d.style.setProperty("--dy", dy);
-
-        // random color (no library)
-        const colors = ["#ff4d8d","#ff85b3","#ffd1e3","#ffcc66","#a7f3d0","#93c5fd"];
-        d.style.background = colors[Math.floor(Math.random()*colors.length)];
-
-        popBox.appendChild(d);
-        setTimeout(() => d.remove(), 950);
+        fx.appendChild(d);
+        setTimeout(()=>d.remove(), 950);
       }
     }
 
-    yesBtn.addEventListener("click", () => {
-      title.textContent = "It’s a date!! 💘";
-      subtitle.textContent = "I’m smiling so hard right now.";
-      result.textContent = yesMessage;
-      popConfetti();
+    // ---- (2) No turns into Yes step-by-step ----
+    let noIndex = 0;
 
-      // disable the "No" button so the moment stays cute
-      noBtn.disabled = true;
-      noBtn.style.opacity = 0.5;
-      noBtn.style.cursor = "not-allowed";
-    });
-
-    // Make the "No" button dodge the cursor/taps (playful)
-    function moveNoButton() {
+    // Make "No" move slightly too (still playful)
+    function moveNoButtonSoft(){
       const area = btnArea.getBoundingClientRect();
       const btn  = noBtn.getBoundingClientRect();
-
-      // keep inside the button area
-      const maxX = area.width  - btn.width;
+      const maxX = area.width - btn.width;
       const maxY = area.height - btn.height;
 
       const x = Math.random() * maxX;
@@ -256,18 +520,49 @@
       noBtn.style.top  = y + "px";
     }
 
-    // desktop hover
-    noBtn.addEventListener("mouseenter", moveNoButton);
-    // mobile tap
-    noBtn.addEventListener("touchstart", (e) => {
-      e.preventDefault();
-      moveNoButton();
-    }, { passive: false });
-
-    // If they somehow click it
     noBtn.addEventListener("click", () => {
-      result.textContent = noMessage;
-      moveNoButton();
+      noIndex = Math.min(noIndex + 1, noStages.length - 1);
+      noBtn.textContent = noStages[noIndex];
+
+      // If it reaches the final stage, trigger YES automatically
+      if (noIndex === noStages.length - 1){
+        yesBtn.click();
+        return;
+      }
+
+      // gentle dodge
+      moveNoButtonSoft();
+
+      // tiny message
+      result.textContent = "Wait… that button is acting suspicious 🤨";
+    });
+
+    // ---- YES behavior ----
+    yesBtn.addEventListener("click", (e) => {
+      title.textContent = "It’s a date!! 💘";
+      subtitle.textContent = "Okay… I’m officially smiling too much right now.";
+      result.textContent = yesMessage;
+
+      // fireworks from button position
+      const r = yesBtn.getBoundingClientRect();
+      const x = r.left + r.width/2;
+      const y = r.top + r.height/2;
+      fireworksBurst(x, y);
+      setTimeout(()=>fireworksBurst(x+40,y-20), 140);
+      setTimeout(()=>fireworksBurst(x-40,y-10), 260);
+
+      // lock no button
+      noBtn.disabled = true;
+      noBtn.style.opacity = 0.5;
+      noBtn.style.cursor = "not-allowed";
+
+      // make loader say the final thing if not already
+      pct.textContent = "100%";
+      barFill.style.width = "100%";
+      loaderNote.textContent = "MATCH: 100% ✅ (and yes, this is official.)";
+
+      // ensure heartbeat is on if checked
+      tryPlayHeartbeat();
     });
   </script>
 </body>
