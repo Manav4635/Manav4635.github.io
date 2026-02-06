@@ -11,12 +11,12 @@
       --pink2:#ff85b3;
       --bg1:#fff0f6;
       --bg2:#fff7fb;
-      --text:#2b2b2b;
+      --text:#222;
       --card:#ffffff;
       --shadow: 0 18px 50px rgba(255,77,141,.18);
     }
 
-    *{box-sizing:border-box}
+    *{ box-sizing:border-box; }
     body{
       margin:0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
@@ -25,43 +25,42 @@
       display:flex;
       align-items:center;
       justify-content:center;
-      padding:24px;
+      padding:22px;
       background: radial-gradient(circle at 20% 20%, var(--bg1), var(--bg2));
       overflow:hidden;
     }
 
-    /* ===== Heart Rain ===== */
-    #heartRain{
-      position:fixed;
-      inset:0;
+    /* ===== Hearts Rain ===== */
+    #rain{
+      position:fixed; inset:0;
       pointer-events:none;
       z-index:0;
       overflow:hidden;
     }
-    .rainHeart{
+    .h{
       position:absolute;
       top:-40px;
-      width:18px; height:18px;
+      width:16px;height:16px;
       background: rgba(255,133,179,.55);
       transform: rotate(45deg);
       border-radius:4px;
-      animation: fall linear infinite;
-      filter: drop-shadow(0 4px 8px rgba(255,77,141,.18));
+      animation: fall linear forwards;
+      filter: drop-shadow(0 6px 10px rgba(255,77,141,.14));
     }
-    .rainHeart::before,.rainHeart::after{
+    .h:before,.h:after{
       content:"";
       position:absolute;
-      width:18px; height:18px;
+      width:16px;height:16px;
       background: rgba(255,133,179,.55);
       border-radius:50%;
     }
-    .rainHeart::before{ left:-9px; top:0; }
-    .rainHeart::after{ left:0; top:-9px; }
+    .h:before{ left:-8px; top:0; }
+    .h:after{ left:0; top:-8px; }
 
     @keyframes fall{
-      from { transform: translateY(-60px) rotate(45deg); opacity:.0; }
-      10%  { opacity: .95; }
-      to   { transform: translateY(120vh) rotate(45deg); opacity:.0; }
+      0%   { transform: translateY(-60px) rotate(45deg); opacity:0; }
+      10%  { opacity:1; }
+      100% { transform: translateY(120vh) rotate(45deg); opacity:0; }
     }
 
     /* ===== Main Card ===== */
@@ -70,214 +69,201 @@
       background:var(--card);
       border-radius:24px;
       box-shadow: var(--shadow);
-      padding:22px;
+      padding:18px;
       position:relative;
       z-index:2;
+      border: 1px solid rgba(255,77,141,.10);
     }
 
     .topRow{
       display:grid;
       grid-template-columns: 1.1fr .9fr;
-      gap:16px;
+      gap:14px;
       align-items:stretch;
     }
     @media (max-width: 780px){
       .topRow{ grid-template-columns: 1fr; }
     }
 
-    .imgWrap{
-      width:100%;
-      aspect-ratio: 16 / 10;
+    .hero{
       border-radius:18px;
       overflow:hidden;
-      background: #ffe3ee;
+      border: 2px solid rgba(255,77,141,.13);
+      background:
+        radial-gradient(circle at 25% 30%, rgba(255,133,179,.35), transparent 55%),
+        radial-gradient(circle at 80% 20%, rgba(255,77,141,.25), transparent 55%),
+        linear-gradient(135deg, #ffe3ee, #fff);
+      aspect-ratio: 16 / 10;
+      position:relative;
       display:flex;
       align-items:center;
       justify-content:center;
-      border: 2px solid rgba(255,77,141,.15);
-      position:relative;
+      padding:16px;
+      text-align:center;
     }
-    .imgWrap img{
-      width:100%;
-      height:100%;
-      object-fit:cover;
-      display:block;
+    .hero h2{
+      margin:0;
+      font-size:clamp(18px, 3.2vw, 26px);
+      line-height:1.15;
+    }
+    .hero p{
+      margin:8px 0 0;
+      opacity:.8;
+      font-weight:600;
     }
 
-    .rightPanel{
-      background: linear-gradient(180deg, rgba(255,77,141,.08), rgba(255,133,179,.06));
-      border: 2px solid rgba(255,77,141,.10);
+    .panel{
       border-radius:18px;
-      padding:14px;
+      border: 2px solid rgba(255,77,141,.10);
+      background: linear-gradient(180deg, rgba(255,77,141,.08), rgba(255,133,179,.06));
+      padding:12px;
       display:flex;
       flex-direction:column;
       gap:10px;
     }
 
-    h1{
-      margin:10px 0 6px;
-      font-size: clamp(22px, 4.5vw, 34px);
-      line-height:1.1;
-      text-align:center;
-    }
-    .subtitle{
-      margin:0 0 10px;
-      opacity:.85;
-      text-align:center;
-    }
-
-    /* ===== Fake compatibility loader (Idea 9) ===== */
+    /* ===== Loader ===== */
     .loaderBox{
-      background:white;
+      background:#fff;
       border-radius:16px;
       padding:12px;
       border:1px solid rgba(0,0,0,.06);
     }
-    .loaderTitle{
-      font-weight:800;
-      margin:0 0 8px;
+    .loaderTop{
       display:flex;
       justify-content:space-between;
-      gap:10px;
       align-items:center;
+      gap:10px;
+      font-weight:900;
+      margin-bottom:8px;
     }
     .bar{
       height:12px;
-      border-radius:999px;
       background: rgba(0,0,0,.06);
+      border-radius:999px;
       overflow:hidden;
     }
     .bar > div{
       height:100%;
       width:0%;
-      border-radius:999px;
       background: linear-gradient(135deg, var(--pink), var(--pink2));
+      border-radius:999px;
       transition: width .2s ease;
     }
-    .loaderNote{
-      font-size:12px;
-      opacity:.72;
+    .note{
       margin-top:8px;
+      font-size:12px;
+      opacity:.75;
+      font-weight:700;
     }
 
-    /* ===== Polaroid gallery (Idea 6) ===== */
+    /* ===== Polaroids (no external images needed) ===== */
     .polaroids{
       display:grid;
       grid-template-columns: repeat(3, 1fr);
-      gap:10px;
+      gap:8px;
     }
     @media (max-width: 780px){
       .polaroids{ grid-template-columns: repeat(2, 1fr); }
     }
-    .polaroid{
-      background:white;
+    .pol{
+      background:#fff;
       border-radius:14px;
-      padding:8px 8px 14px;
+      padding:8px 8px 12px;
       box-shadow: 0 14px 30px rgba(0,0,0,.08);
       border:1px solid rgba(0,0,0,.06);
       transform: rotate(var(--r));
-      transition: transform .15s ease;
     }
-    .polaroid:hover{
-      transform: rotate(var(--r)) translateY(-2px) scale(1.01);
-    }
-    .polaroid img{
+    .polPic{
       width:100%;
       aspect-ratio: 1 / 1;
-      object-fit:cover;
       border-radius:10px;
-      display:block;
-      background:#f3f3f3;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255,133,179,.35), transparent 55%),
+        radial-gradient(circle at 70% 60%, rgba(255,77,141,.25), transparent 55%),
+        linear-gradient(135deg, #ffe3ee, #fff);
+      border: 1px solid rgba(0,0,0,.06);
     }
     .cap{
       margin-top:8px;
       font-size:12px;
-      font-weight:800;
-      opacity:.85;
+      font-weight:900;
+      opacity:.8;
       text-align:center;
     }
 
-    /* ===== Buttons ===== */
+    h1{
+      margin:14px 0 6px;
+      font-size: clamp(22px, 4.5vw, 34px);
+      line-height:1.1;
+      text-align:center;
+    }
+    .sub{
+      margin:0 0 10px;
+      opacity:.82;
+      text-align:center;
+      font-weight:600;
+    }
+
     .buttons{
       display:flex;
       gap:12px;
       justify-content:center;
       flex-wrap:wrap;
-      margin-top:14px;
+      margin-top:12px;
       position:relative;
-      height:70px;
+      height:74px;
     }
     button{
       border:0;
       padding:14px 20px;
       border-radius:999px;
       font-size:16px;
-      font-weight:800;
+      font-weight:900;
       cursor:pointer;
-      transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
+      transition: transform .12s ease, box-shadow .12s ease;
       user-select:none;
-      min-width:140px;
+      min-width:150px;
     }
-    #yesBtn{
+    #yes{
       background: linear-gradient(135deg, var(--pink), var(--pink2));
-      color:white;
+      color:#fff;
       box-shadow: 0 10px 22px rgba(255,77,141,.35);
     }
-    #yesBtn:hover{ transform: translateY(-1px) scale(1.02); }
-    #noBtn{
+    #yes:hover{ transform: translateY(-1px) scale(1.02); }
+
+    #no{
       background:#f2f2f2;
       color:#444;
       box-shadow: 0 8px 18px rgba(0,0,0,.06);
       position:relative;
     }
 
-    /* sound toggle */
-    .soundRow{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:10px;
-      margin-top:8px;
-      padding:10px 12px;
-      background: rgba(255,255,255,.7);
-      border-radius:14px;
-      border:1px solid rgba(0,0,0,.06);
-    }
-    .soundRow small{ opacity:.75; }
-    .toggle{
-      display:flex;
-      gap:8px;
-      align-items:center;
-      font-weight:800;
-    }
-    .toggle input{ transform: scale(1.15); }
-
     .result{
-      margin-top:12px;
+      margin-top:10px;
       font-size:18px;
       font-weight:900;
-      min-height:28px;
+      min-height:26px;
       text-align:center;
     }
-
     .tiny{
-      margin-top:8px;
+      margin-top:6px;
       font-size:12px;
       opacity:.65;
       text-align:center;
+      font-weight:700;
     }
 
-    /* ===== Fireworks/confetti (Idea 11) ===== */
-    .fxLayer{
-      position:fixed;
-      inset:0;
+    /* ===== Fireworks/confetti ===== */
+    #fx{
+      position:fixed; inset:0;
       pointer-events:none;
-      z-index:5;
+      z-index:6;
       overflow:hidden;
     }
     .spark{
       position:absolute;
-      width:10px; height:10px;
+      width:10px;height:10px;
       border-radius:50%;
       animation: burst 900ms ease-out forwards;
       opacity:.95;
@@ -287,283 +273,423 @@
       from{ transform: translate(0,0) scale(1); }
       to{ transform: translate(var(--dx), var(--dy)) scale(0.2); opacity:0; }
     }
+
+    /* ===== Secret Letter Modal ===== */
+    .modalBg{
+      position:fixed; inset:0;
+      background: rgba(0,0,0,.35);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      z-index:10;
+    }
+    .modal{
+      width:min(620px, 100%);
+      background:#fff;
+      border-radius:22px;
+      box-shadow: 0 22px 60px rgba(0,0,0,.18);
+      border:1px solid rgba(255,77,141,.18);
+      overflow:hidden;
+      transform: translateY(10px);
+      animation: popIn .18s ease-out forwards;
+    }
+    @keyframes popIn{
+      to{ transform: translateY(0); }
+    }
+    .modalTop{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      padding:12px 14px;
+      background: linear-gradient(135deg, rgba(255,77,141,.10), rgba(255,133,179,.08));
+      border-bottom: 1px solid rgba(0,0,0,.06);
+      font-weight:900;
+    }
+    .tabs{
+      display:flex;
+      gap:8px;
+      padding:10px 14px;
+      background:#fff;
+      border-bottom: 1px solid rgba(0,0,0,.06);
+    }
+    .tab{
+      padding:10px 12px;
+      border-radius:999px;
+      border:1px solid rgba(0,0,0,.10);
+      background:#fff;
+      font-weight:900;
+      cursor:pointer;
+    }
+    .tab.active{
+      border-color: rgba(255,77,141,.35);
+      background: rgba(255,77,141,.10);
+    }
+    .modalBody{
+      padding:14px;
+    }
+    .closeBtn{
+      border:0;
+      background:#fff;
+      border-radius:999px;
+      padding:10px 12px;
+      font-weight:900;
+      cursor:pointer;
+      border:1px solid rgba(0,0,0,.10);
+    }
+
+    /* iMessage look */
+    .imessage{
+      background: #f5f5f7;
+      border-radius:18px;
+      padding:12px;
+      border:1px solid rgba(0,0,0,.06);
+    }
+    .bubble{
+      max-width: 92%;
+      padding:10px 12px;
+      border-radius:18px;
+      margin:8px 0;
+      font-weight:800;
+      line-height:1.25;
+    }
+    .bubble.them{
+      background:#fff;
+      border:1px solid rgba(0,0,0,.08);
+      border-bottom-left-radius:6px;
+    }
+    .bubble.me{
+      margin-left:auto;
+      background: linear-gradient(135deg, var(--pink), var(--pink2));
+      color:#fff;
+      border-bottom-right-radius:6px;
+    }
+    .time{
+      text-align:center;
+      font-size:12px;
+      opacity:.65;
+      font-weight:800;
+      margin:6px 0 10px;
+    }
+
+    /* Handwritten look */
+    .letter{
+      background:
+        linear-gradient(transparent 30px, rgba(255,77,141,.08) 31px),
+        #fffdf8;
+      background-size: 100% 31px;
+      border-radius:18px;
+      padding:14px;
+      border:1px solid rgba(0,0,0,.06);
+    }
+    .letter h3{
+      margin:0 0 6px;
+      font-family: "Comic Sans MS", "Bradley Hand", "Marker Felt", cursive;
+      font-size:22px;
+    }
+    .letter p{
+      margin:8px 0;
+      font-family: "Comic Sans MS", "Bradley Hand", "Marker Felt", cursive;
+      font-size:18px;
+      line-height:1.25;
+      font-weight:700;
+    }
   </style>
 </head>
 
 <body>
-  <!-- Heart Rain -->
-  <div id="heartRain"></div>
-
-  <!-- Effects layer -->
-  <div class="fxLayer" id="fx"></div>
+  <div id="rain"></div>
+  <div id="fx"></div>
 
   <main class="card" aria-live="polite">
 
     <div class="topRow">
-      <!-- Main cute image -->
-      <div class="imgWrap">
-        <!-- Change this src to any image URL OR your own uploaded image -->
-        <img alt="Cute valentines image"
-             src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=1400&q=80">
+      <div class="hero">
+        <div>
+          <h2>🌸 Valentine Mission 🌸<br>One question. One answer.</h2>
+          <p>(Warning: extremely cute website ahead)</p>
+        </div>
       </div>
 
-      <!-- Right panel: compatibility + polaroids -->
-      <div class="rightPanel">
-
-        <!-- Compatibility loader -->
-        <div class="loaderBox" id="loaderBox">
-          <div class="loaderTitle">
-            <span>Calculating compatibility…</span>
+      <div class="panel">
+        <div class="loaderBox">
+          <div class="loaderTop">
+            <span id="loaderTitle">Calculating compatibility…</span>
             <span id="pct">0%</span>
           </div>
-          <div class="bar"><div id="barFill"></div></div>
-          <div class="loaderNote" id="loaderNote">Please do not panic. Science is happening.</div>
+          <div class="bar"><div id="fill"></div></div>
+          <div class="note" id="note">Please stand by. Romance science in progress.</div>
         </div>
 
-        <!-- Polaroids -->
         <div class="polaroids">
-          <!-- Replace these images with YOUR photos (see instructions below) -->
-          <div class="polaroid" style="--r:-3deg">
-            <img src="photos/pic1.jpg" alt="memory 1" onerror="this.src='https://picsum.photos/300?random=11'">
+          <div class="pol" style="--r:-3deg">
+            <div class="polPic"></div>
             <div class="cap">little moments</div>
           </div>
-          <div class="polaroid" style="--r:2deg">
-            <img src="photos/pic2.jpg" alt="memory 2" onerror="this.src='https://picsum.photos/300?random=12'">
+          <div class="pol" style="--r:2deg">
+            <div class="polPic"></div>
             <div class="cap">big smiles</div>
           </div>
-          <div class="polaroid" style="--r:-1deg">
-            <img src="photos/pic3.jpg" alt="memory 3" onerror="this.src='https://picsum.photos/300?random=13'">
+          <div class="pol" style="--r:-1deg">
+            <div class="polPic"></div>
             <div class="cap">our vibe</div>
           </div>
         </div>
 
-        <!-- Heartbeat sound toggle -->
-        <div class="soundRow">
-          <div>
-            <div style="font-weight:900;">Heartbeat mode 💓</div>
-            <small>(If it doesn’t play, tap the checkbox once)</small>
-          </div>
-          <label class="toggle">
-            <input type="checkbox" id="soundToggle" checked />
-            On
-          </label>
-        </div>
-
+        <div class="tiny">Heartbeat will start after your first tap/click 💓</div>
       </div>
     </div>
 
     <h1 id="title">Will you be my Valentine? 💖</h1>
-    <p class="subtitle" id="subtitle">I made this little page just for you.</p>
+    <p class="sub" id="sub">I made this just for you.</p>
 
-    <div class="buttons" id="btnArea">
-      <button id="yesBtn">Yes 😍</button>
-      <button id="noBtn">No 🙈</button>
+    <div class="buttons" id="area">
+      <button id="yes">Yes 😍</button>
+      <button id="no">No 🙈</button>
     </div>
 
     <div class="result" id="result"></div>
-    <div class="tiny">Tip: Add your photos by uploading them into a folder called <b>photos</b> in this repo.</div>
-
-    <!-- Heartbeat audio (Idea 3). Put heartbeat.mp3 in repo root OR use a direct URL -->
-    <audio id="heartbeat" loop preload="auto">
-      <source src="heartbeat.mp3" type="audio/mpeg">
-    </audio>
+    <div class="tiny">Pro tip: if “No” starts acting weird… it’s not your fault 🙂</div>
   </main>
 
+  <!-- Secret Letter Modal -->
+  <div class="modalBg" id="modalBg">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modalTop">
+        <div id="modalTitle">Secret message unlocked 🔓</div>
+        <button class="closeBtn" id="closeModal">Close</button>
+      </div>
+
+      <div class="tabs">
+        <button class="tab active" id="tabMsg">iMessage</button>
+        <button class="tab" id="tabLetter">Handwritten</button>
+      </div>
+
+      <div class="modalBody">
+        <!-- iMessage view -->
+        <div id="viewMsg">
+          <div class="imessage">
+            <div class="time" id="msgTime">Today</div>
+            <div class="bubble them" id="b1">Hey… I have a question 😳</div>
+            <div class="bubble them" id="b2">Will you be my Valentine?</div>
+            <div class="bubble me" id="b3">YES 💖</div>
+            <div class="bubble them" id="b4">Okay wow… you just made my whole day 😭💞</div>
+            <div class="bubble them" id="b5">Now I owe you a cute date.</div>
+          </div>
+        </div>
+
+        <!-- Handwritten view -->
+        <div id="viewLetter" style="display:none;">
+          <div class="letter">
+            <h3>Dear Valentine,</h3>
+            <p id="l1">I was a little nervous making this…</p>
+            <p id="l2">But I wanted to do something different and cute.</p>
+            <p id="l3">So… thank you for saying yes 💖</p>
+            <p id="l4">— Manav</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
-    // ======= CONFIG YOU CAN EDIT =======
-    const herName = ""; // e.g. "Aisha"
-    const yesMessage = `YAY!! ${herName ? herName + " " : ""}💞 You just made my day. Happy Valentine’s!`;
-    const noStages = [
-      "No 🙈",
-      "Maybe… 😳",
-      "Hmm… 🤔",
-      "Are you sure? 🥺",
-      "Ok fine… YES 😍"
-    ];
-    // ===================================
+    /* ========= HEART RAIN ========= */
+    const rain = document.getElementById("rain");
+    function dropHeart(){
+      const e = document.createElement("div");
+      e.className = "h";
+      const left = Math.random() * 100;
+      const size = 10 + Math.random() * 20;
+      const dur  = 2.8 + Math.random() * 4.2;
 
-    const yesBtn = document.getElementById("yesBtn");
-    const noBtn  = document.getElementById("noBtn");
-    const result = document.getElementById("result");
-    const title  = document.getElementById("title");
-    const subtitle = document.getElementById("subtitle");
-    const btnArea = document.getElementById("btnArea");
+      e.style.left = left + "%";
+      e.style.width = size + "px";
+      e.style.height = size + "px";
+      e.style.animationDuration = dur + "s";
+      e.style.opacity = (0.25 + Math.random()*0.7).toFixed(2);
 
-    // Loader elements (Idea 9)
+      rain.appendChild(e);
+      setTimeout(()=>e.remove(), (dur+0.2)*1000);
+    }
+    setInterval(dropHeart, 160);
+    for(let i=0;i<18;i++) setTimeout(dropHeart, i*90);
+
+    /* ========= COMPATIBILITY LOADER ========= */
     const pct = document.getElementById("pct");
-    const barFill = document.getElementById("barFill");
-    const loaderNote = document.getElementById("loaderNote");
+    const fill = document.getElementById("fill");
+    const note = document.getElementById("note");
+    const notes = [
+      "Collecting adorable evidence…",
+      "Running romance algorithm…",
+      "Checking snack compatibility…",
+      "Finalizing results…"
+    ];
+    let p = 0, ni = 0;
+    const t = setInterval(()=>{
+      p += Math.floor(2 + Math.random()*6);
+      if(p > 100) p = 100;
+      pct.textContent = p + "%";
+      fill.style.width = p + "%";
 
-    // Audio (Idea 3)
-    const heartbeat = document.getElementById("heartbeat");
-    const soundToggle = document.getElementById("soundToggle");
+      if (p % 25 < 6 && ni < notes.length){
+        note.textContent = notes[ni++];
+      }
+      if(p === 100){
+        clearInterval(t);
+        note.textContent = "MATCH: 100% ✅ (officially confirmed)";
+      }
+    }, 120);
 
-    // FX (Idea 11)
+    /* ========= HEARTBEAT (NO MP3) =========
+       iOS blocks audio until user interacts: so we start on first click.
+    */
+    let audioStarted = false;
+    let audioCtx, osc, gain;
+    function startHeartbeat(){
+      if(audioStarted) return;
+      audioStarted = true;
+
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      gain = audioCtx.createGain();
+      gain.gain.value = 0.0;
+      gain.connect(audioCtx.destination);
+
+      osc = audioCtx.createOscillator();
+      osc.type = "sine";
+      osc.frequency.value = 55; // low thump
+      osc.connect(gain);
+      osc.start();
+
+      // pulse pattern: thump-thump ... pause
+      function pulse(){
+        if(!audioStarted) return;
+        const now = audioCtx.currentTime;
+
+        // First thump
+        gain.gain.cancelScheduledValues(now);
+        gain.gain.setValueAtTime(0.0, now);
+        gain.gain.linearRampToValueAtTime(0.06, now + 0.02);
+        gain.gain.linearRampToValueAtTime(0.0, now + 0.12);
+
+        // Second thump
+        gain.gain.setValueAtTime(0.0, now + 0.16);
+        gain.gain.linearRampToValueAtTime(0.045, now + 0.18);
+        gain.gain.linearRampToValueAtTime(0.0, now + 0.30);
+
+        setTimeout(pulse, 900);
+      }
+      pulse();
+    }
+    document.addEventListener("click", startHeartbeat, { once:true });
+    document.addEventListener("touchstart", startHeartbeat, { once:true, passive:true });
+
+    /* ========= FIREWORKS ========= */
     const fx = document.getElementById("fx");
-
-    // Heart rain
-    const heartRain = document.getElementById("heartRain");
-
-    // ---- Heart Rain generator ----
-    function spawnRainHeart(){
-      const h = document.createElement("div");
-      h.className = "rainHeart";
-
-      const left = Math.random() * 100; // %
-      const size = 10 + Math.random() * 18; // px
-      const dur  = 3.5 + Math.random() * 4.5; // seconds
-      const drift = (Math.random() * 60 - 30); // little side drift
-
-      h.style.left = left + "%";
-      h.style.width = size + "px";
-      h.style.height = size + "px";
-      h.style.animationDuration = dur + "s";
-      h.style.transform = `translateX(${drift}px) rotate(45deg)`;
-
-      // vary opacity slightly
-      h.style.opacity = (0.25 + Math.random() * 0.65).toFixed(2);
-
-      heartRain.appendChild(h);
-      setTimeout(() => h.remove(), (dur + 0.2) * 1000);
-    }
-    // spawn a steady rain
-    setInterval(spawnRainHeart, 180);
-    // initial burst
-    for(let i=0;i<20;i++) setTimeout(spawnRainHeart, i*80);
-
-    // ---- Compatibility loader (Idea 9) ----
-    function runLoader(){
-      let p = 0;
-      const notes = [
-        "Collecting adorable evidence…",
-        "Running romance algorithm…",
-        "Cross-checking snack compatibility…",
-        "Finalizing results…"
-      ];
-      let noteIdx = 0;
-
-      const t = setInterval(() => {
-        p += Math.floor(2 + Math.random()*6);
-        if (p > 100) p = 100;
-        pct.textContent = p + "%";
-        barFill.style.width = p + "%";
-
-        if (p % 25 < 6 && noteIdx < notes.length){
-          loaderNote.textContent = notes[noteIdx++];
-        }
-
-        if (p === 100){
-          clearInterval(t);
-          loaderNote.textContent = "MATCH: 100% ✅ (This is scientifically confirmed.)";
-        }
-      }, 120);
-    }
-    runLoader();
-
-    // ---- Audio handling (Idea 3) ----
-    async function tryPlayHeartbeat(){
-      if(!soundToggle.checked) return;
-      try{
-        await heartbeat.play();
-      }catch(e){
-        // autoplay may be blocked until user interacts
-      }
-    }
-    // Attempt on load
-    window.addEventListener("load", tryPlayHeartbeat);
-    // If user toggles sound
-    soundToggle.addEventListener("change", async () => {
-      if(soundToggle.checked){
-        await tryPlayHeartbeat();
-      }else{
-        heartbeat.pause();
-        heartbeat.currentTime = 0;
-      }
-    });
-    // If user taps anywhere, try again (helps on iOS)
-    document.addEventListener("click", tryPlayHeartbeat, { once:false });
-
-    // ---- Fireworks/confetti burst (Idea 11) ----
-    function fireworksBurst(x, y){
-      const dots = 42;
+    function fireworks(x, y){
       const colors = ["#ff4d8d","#ff85b3","#ffd1e3","#ffcc66","#a7f3d0","#93c5fd","#c4b5fd"];
-      for(let i=0;i<dots;i++){
-        const d = document.createElement("div");
-        d.className = "spark";
-        d.style.left = x + "px";
-        d.style.top  = y + "px";
-        d.style.background = colors[Math.floor(Math.random()*colors.length)];
-        const dx = (Math.random()*520 - 260) + "px";
-        const dy = (Math.random()*420 - 240) + "px";
-        d.style.setProperty("--dx", dx);
-        d.style.setProperty("--dy", dy);
-        fx.appendChild(d);
-        setTimeout(()=>d.remove(), 950);
+      for(let i=0;i<44;i++){
+        const s = document.createElement("div");
+        s.className = "spark";
+        s.style.left = x + "px";
+        s.style.top  = y + "px";
+        s.style.background = colors[Math.floor(Math.random()*colors.length)];
+        s.style.setProperty("--dx", (Math.random()*520 - 260) + "px");
+        s.style.setProperty("--dy", (Math.random()*420 - 240) + "px");
+        fx.appendChild(s);
+        setTimeout(()=>s.remove(), 950);
       }
     }
 
-    // ---- (2) No turns into Yes step-by-step ----
+    /* ========= BUTTON LOGIC ========= */
+    const yes = document.getElementById("yes");
+    const no  = document.getElementById("no");
+    const area = document.getElementById("area");
+    const result = document.getElementById("result");
+
+    // (2) No transforms into Yes
+    const noStages = ["No 🙈", "Maybe… 😳", "Hmm… 🤔", "Are you sure? 🥺", "Ok fine… YES 😍"];
     let noIndex = 0;
 
-    // Make "No" move slightly too (still playful)
-    function moveNoButtonSoft(){
-      const area = btnArea.getBoundingClientRect();
-      const btn  = noBtn.getBoundingClientRect();
-      const maxX = area.width - btn.width;
-      const maxY = area.height - btn.height;
-
-      const x = Math.random() * maxX;
-      const y = Math.random() * maxY;
-
-      noBtn.style.position = "absolute";
-      noBtn.style.left = x + "px";
-      noBtn.style.top  = y + "px";
+    function moveNoSoft(){
+      const A = area.getBoundingClientRect();
+      const B = no.getBoundingClientRect();
+      const maxX = Math.max(0, A.width - B.width);
+      const maxY = Math.max(0, A.height - B.height);
+      no.style.position = "absolute";
+      no.style.left = (Math.random() * maxX) + "px";
+      no.style.top  = (Math.random() * maxY) + "px";
     }
 
-    noBtn.addEventListener("click", () => {
+    no.addEventListener("click", ()=>{
       noIndex = Math.min(noIndex + 1, noStages.length - 1);
-      noBtn.textContent = noStages[noIndex];
+      no.textContent = noStages[noIndex];
 
-      // If it reaches the final stage, trigger YES automatically
-      if (noIndex === noStages.length - 1){
-        yesBtn.click();
+      if(noIndex === noStages.length - 1){
+        yes.click();
         return;
       }
-
-      // gentle dodge
-      moveNoButtonSoft();
-
-      // tiny message
-      result.textContent = "Wait… that button is acting suspicious 🤨";
+      moveNoSoft();
+      result.textContent = "That button is… changing its mind 😭";
     });
 
-    // ---- YES behavior ----
-    yesBtn.addEventListener("click", (e) => {
-      title.textContent = "It’s a date!! 💘";
-      subtitle.textContent = "Okay… I’m officially smiling too much right now.";
-      result.textContent = yesMessage;
+    /* ========= SECRET LETTER MODAL ========= */
+    const modalBg = document.getElementById("modalBg");
+    const closeModal = document.getElementById("closeModal");
+    const tabMsg = document.getElementById("tabMsg");
+    const tabLetter = document.getElementById("tabLetter");
+    const viewMsg = document.getElementById("viewMsg");
+    const viewLetter = document.getElementById("viewLetter");
 
-      // fireworks from button position
-      const r = yesBtn.getBoundingClientRect();
+    function openModal(){
+      modalBg.style.display = "flex";
+    }
+    function hideModal(){
+      modalBg.style.display = "none";
+    }
+    closeModal.addEventListener("click", hideModal);
+    modalBg.addEventListener("click", (e)=>{ if(e.target === modalBg) hideModal(); });
+
+    tabMsg.addEventListener("click", ()=>{
+      tabMsg.classList.add("active");
+      tabLetter.classList.remove("active");
+      viewMsg.style.display = "block";
+      viewLetter.style.display = "none";
+    });
+    tabLetter.addEventListener("click", ()=>{
+      tabLetter.classList.add("active");
+      tabMsg.classList.remove("active");
+      viewMsg.style.display = "none";
+      viewLetter.style.display = "block";
+    });
+
+    /* ========= YES ========= */
+    yes.addEventListener("click", ()=>{
+      document.getElementById("title").textContent = "It’s a date!! 💘";
+      document.getElementById("sub").textContent = "Okay… I’m smiling too much right now.";
+
+      result.textContent = "Secret message unlocked. Open it 😳👇";
+
+      const r = yes.getBoundingClientRect();
       const x = r.left + r.width/2;
       const y = r.top + r.height/2;
-      fireworksBurst(x, y);
-      setTimeout(()=>fireworksBurst(x+40,y-20), 140);
-      setTimeout(()=>fireworksBurst(x-40,y-10), 260);
+      fireworks(x, y);
+      setTimeout(()=>fireworks(x+35,y-10), 160);
+      setTimeout(()=>fireworks(x-35,y-15), 290);
 
-      // lock no button
-      noBtn.disabled = true;
-      noBtn.style.opacity = 0.5;
-      noBtn.style.cursor = "not-allowed";
+      no.disabled = true;
+      no.style.opacity = 0.55;
+      no.style.cursor = "not-allowed";
 
-      // make loader say the final thing if not already
-      pct.textContent = "100%";
-      barFill.style.width = "100%";
-      loaderNote.textContent = "MATCH: 100% ✅ (and yes, this is official.)";
-
-      // ensure heartbeat is on if checked
-      tryPlayHeartbeat();
+      openModal();
     });
+
+    /* Make iMessage “Today” show local day */
+    const msgTime = document.getElementById("msgTime");
+    try{
+      const d = new Date();
+      msgTime.textContent = d.toLocaleDateString(undefined, { weekday:"long" });
+    }catch(e){}
   </script>
 </body>
 </html>
