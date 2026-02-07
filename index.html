@@ -11,6 +11,7 @@
       --bg1:#fff0f6;
       --bg2:#fff7fb;
       --text:#2b2b2b;
+      --card: rgba(255,255,255,.92);
     }
     *{box-sizing:border-box}
     body{
@@ -26,40 +27,142 @@
       overflow:hidden;
     }
 
-    /* floating hearts background */
+    /* ---------- Heart rain (background) ---------- */
     .heart{
       position:absolute;
-      width:18px; height:18px;
+      width:16px; height:16px;
       background: var(--pink2);
       transform: rotate(45deg);
-      opacity:.25;
-      animation: floatUp 9s linear infinite;
+      opacity:.28;
       border-radius:4px;
+      pointer-events:none;
+      animation: floatUp 9s linear infinite;
     }
     .heart::before,.heart::after{
       content:"";
       position:absolute;
-      width:18px; height:18px;
+      width:16px; height:16px;
       background: var(--pink2);
       border-radius:50%;
     }
-    .heart::before{ left:-9px; top:0; }
-    .heart::after{ left:0; top:-9px; }
+    .heart::before{ left:-8px; top:0; }
+    .heart::after{ left:0; top:-8px; }
+
+    /* we’ll use translateY from bottom to top, but we position hearts below the screen */
     @keyframes floatUp{
-      from { transform: translateY(30vh) rotate(45deg); }
-      to   { transform: translateY(-140vh) rotate(45deg); }
+      from { transform: translateY(35vh) rotate(45deg); }
+      to   { transform: translateY(-150vh) rotate(45deg); }
     }
 
-    .card{
-      width:min(520px, 100%);
-      background:white;
+    /* ---------- Loading screen ---------- */
+    .screen{
+      width:min(560px, 100%);
+      background: var(--card);
       border-radius:24px;
       box-shadow: 0 18px 50px rgba(255,77,141,.18);
       padding:22px;
       text-align:center;
       position:relative;
       z-index:2;
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255,77,141,.12);
     }
+
+    .hide{ display:none !important; }
+
+    .loaderTitle{
+      font-size: clamp(20px, 4.2vw, 30px);
+      margin:10px 0 6px;
+      line-height:1.1;
+    }
+    .loaderSub{
+      margin:0 0 16px;
+      opacity:.85;
+    }
+
+    .barWrap{
+      width:100%;
+      background: rgba(255,77,141,.10);
+      border-radius:999px;
+      padding:6px;
+      border: 1px solid rgba(255,77,141,.14);
+      overflow:hidden;
+    }
+    .bar{
+      width:0%;
+      height:14px;
+      border-radius:999px;
+      background: linear-gradient(135deg, var(--pink), var(--pink2));
+      box-shadow: 0 10px 22px rgba(255,77,141,.25);
+      transition: width .12s linear;
+    }
+    .pct{
+      margin-top:10px;
+      font-weight:800;
+      color: var(--pink);
+    }
+
+    /* ---------- Main card ---------- */
+    .card{
+      width:min(560px, 100%);
+      background: var(--card);
+      border-radius:24px;
+      box-shadow: 0 18px 50px rgba(255,77,141,.18);
+      padding:22px;
+      text-align:center;
+      position:relative;
+      z-index:2;
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255,77,141,.12);
+      overflow:hidden;
+    }
+
+    /* confetti-ish */
+    .pop{
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      overflow:hidden;
+      border-radius:24px;
+      z-index:3;
+    }
+    .dot{
+      position:absolute;
+      width:10px; height:10px;
+      border-radius:50%;
+      animation: pop 900ms ease-out forwards;
+      opacity:.9;
+    }
+    @keyframes pop{
+      from{ transform: translate(0,0) scale(1); }
+      to{ transform: translate(var(--dx), var(--dy)) scale(0.2); opacity:0; }
+    }
+
+    /* scattered photos */
+    .photo{
+      position:absolute;
+      width:110px;
+      height:110px;
+      border-radius:18px;
+      overflow:hidden;
+      border: 2px solid rgba(255,77,141,.18);
+      box-shadow: 0 10px 30px rgba(255,77,141,.15);
+      background:#ffe3ee;
+      transform: rotate(var(--rot));
+      opacity:.92;
+      z-index:1;
+    }
+    .photo img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+    /* place 3 photos not too crowded */
+    .p1{ left: -10px; top: 18px; --rot:-8deg; }
+    .p2{ right:-14px; top: 64px; --rot: 10deg; }
+    .p3{ left: 18px; bottom:-18px; --rot: 7deg; width:120px; height:120px; }
+
     .imgWrap{
       width:100%;
       aspect-ratio: 16 / 10;
@@ -70,6 +173,8 @@
       align-items:center;
       justify-content:center;
       border: 2px solid rgba(255,77,141,.15);
+      position:relative;
+      z-index:2;
     }
     .imgWrap img{
       width:100%;
@@ -82,10 +187,14 @@
       margin:16px 0 6px;
       font-size: clamp(22px, 4.5vw, 34px);
       line-height:1.1;
+      position:relative;
+      z-index:2;
     }
     p{
       margin:0 0 16px;
       opacity:.85;
+      position:relative;
+      z-index:2;
     }
 
     .buttons{
@@ -96,13 +205,14 @@
       margin-top:10px;
       position:relative;
       height:64px;
+      z-index:2;
     }
     button{
       border:0;
       padding:14px 20px;
       border-radius:999px;
       font-size:16px;
-      font-weight:700;
+      font-weight:800;
       cursor:pointer;
       transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
       user-select:none;
@@ -125,53 +235,145 @@
     .result{
       margin-top:16px;
       font-size:18px;
-      font-weight:700;
+      font-weight:800;
       min-height:28px;
+      z-index:2;
+      position:relative;
     }
     .tiny{
       margin-top:10px;
       font-size:12px;
       opacity:.65;
+      z-index:2;
+      position:relative;
     }
 
-    /* confetti-ish */
-    .pop{
-      position:absolute;
+    /* ---------- Letter modal ---------- */
+    .overlay{
+      position:fixed;
       inset:0;
+      background: rgba(0,0,0,.35);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      z-index:999;
+      opacity:0;
       pointer-events:none;
-      overflow:hidden;
-      border-radius:24px;
+      transition: opacity .2s ease;
     }
-    .dot{
+    .overlay.show{
+      opacity:1;
+      pointer-events:auto;
+    }
+
+    .letterCard{
+      width:min(520px, 100%);
+      background: white;
+      border-radius:24px;
+      box-shadow: 0 22px 70px rgba(0,0,0,.22);
+      overflow:hidden;
+      position:relative;
+      transform: translateY(10px) scale(.98);
+      transition: transform .22s ease;
+    }
+    .overlay.show .letterCard{
+      transform: translateY(0) scale(1);
+    }
+
+    /* envelope top */
+    .envTop{
+      height:110px;
+      background: linear-gradient(135deg, #ffd1e3, #ffe9f2);
+      position:relative;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .envTop::after{
+      content:"";
       position:absolute;
-      width:10px; height:10px;
-      border-radius:50%;
-      animation: pop 900ms ease-out forwards;
+      left:0; right:0; bottom:-1px;
+      margin:auto;
+      width:0; height:0;
+      border-left: 260px solid transparent;
+      border-right: 260px solid transparent;
+      border-top: 70px solid #fff;
       opacity:.9;
     }
-    @keyframes pop{
-      from{ transform: translate(0,0) scale(1); }
-      to{ transform: translate(var(--dx), var(--dy)) scale(0.2); opacity:0; }
+    .envLabel{
+      position:relative;
+      z-index:2;
+      font-weight:900;
+      color:#b0124b;
+      letter-spacing:.3px;
     }
 
-    a { color: var(--pink); text-decoration: none; font-weight: 700; }
+    .letterBody{
+      padding:18px 18px 16px;
+    }
+    .personalImg{
+      width:100%;
+      aspect-ratio: 16/9;
+      border-radius:18px;
+      overflow:hidden;
+      border: 2px solid rgba(255,77,141,.14);
+      background:#ffe3ee;
+      margin-bottom:14px;
+    }
+    .personalImg img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+    .msg{
+      font-size:16px;
+      line-height:1.45;
+      margin:0;
+      color:#2b2b2b;
+    }
+    .closeRow{
+      display:flex;
+      justify-content:flex-end;
+      gap:10px;
+      padding:0 18px 16px;
+    }
+    .closeBtn{
+      background:#f2f2f2;
+      color:#333;
+      box-shadow:none;
+      font-weight:800;
+    }
+    .closeBtn:hover{ transform: translateY(-1px); }
+
+    a { color: var(--pink); text-decoration: none; font-weight: 800; }
   </style>
 </head>
 <body>
 
-  <!-- hearts -->
-  <div class="heart" style="left:8%;  top:95%; animation-delay:0s;"></div>
-  <div class="heart" style="left:22%; top:110%; animation-delay:2s;"></div>
-  <div class="heart" style="left:40%; top:100%; animation-delay:1s;"></div>
-  <div class="heart" style="left:62%; top:108%; animation-delay:3s;"></div>
-  <div class="heart" style="left:78%; top:98%;  animation-delay:1.6s;"></div>
-  <div class="heart" style="left:90%; top:115%; animation-delay:2.7s;"></div>
+  <!-- Loading screen -->
+  <main class="screen" id="loadingScreen" aria-live="polite">
+    <div class="loaderTitle">Matching compatibility… 💘</div>
+    <div class="loaderSub">Hold on baby, I’m calculating how perfect we are 😌</div>
+    <div class="barWrap" aria-label="Loading bar">
+      <div class="bar" id="bar"></div>
+    </div>
+    <div class="pct" id="pct">0%</div>
+    <div class="tiny">Tip: turn your sound on… (jk this is quiet 😭)</div>
+  </main>
 
-  <main class="card" aria-live="polite">
+  <!-- Main Valentine card -->
+  <main class="card hide" id="mainCard" aria-live="polite">
     <div class="pop" id="pop"></div>
 
+    <!-- 3 scattered photos (REPLACE src with your own files) -->
+    <div class="photo p1"><img src="IMG_0044.JPG" alt="Photo 1"></div>
+    <div class="photo p2"><img src="IMG_3049.JPG" alt="Photo 2"></div>
+    <div class="photo p3"><img src="IMG_4061.JPG" alt="Photo 3"></div>
+
     <div class="imgWrap">
-      <!-- Replace this image URL with any cute image you want -->
+      <!-- Replace this with any cute main image -->
       <img alt="Cute valentines image"
            src="https://thumbs.dreamstime.com/z/adorable-watercolor-puppies-holding-bright-red-heart-surrounded-pink-hearts-valentine-s-day-concept-love-cuteness-435672263.jpg?ct=jpeg">
     </div>
@@ -185,9 +387,102 @@
     </div>
 
     <div class="result" id="result"></div>
+    <div class="tiny" id="tiny"></div>
   </main>
 
+  <!-- Letter modal -->
+  <div class="overlay" id="overlay" aria-hidden="true">
+    <div class="letterCard" role="dialog" aria-modal="true" aria-label="Love letter">
+      <div class="envTop">
+        <div class="envLabel">A lil letter for you 💌</div>
+      </div>
+      <div class="letterBody">
+        <!-- PERSONAL IMAGE (only you see it) -->
+        <div class="personalImg">
+          <img src="personal.jpg" alt="Personal photo">
+        </div>
+        <p class="msg" id="letterText"></p>
+      </div>
+      <div class="closeRow">
+        <button class="closeBtn" id="closeLetter">Close</button>
+      </div>
+    </div>
+  </div>
+
   <script>
+    /* ----------------- SETTINGS YOU EDIT ----------------- */
+    const herName = "baby";
+
+    // Put your email send settings here IF you’re using EmailJS (optional):
+    // 1) Create EmailJS account
+    // 2) Add their script + init + send (below)
+    const USE_EMAILJS = false; // set true if you want to send email
+
+    // If USE_EMAILJS = true, fill these:
+    const EMAILJS_PUBLIC_KEY = "YOUR_PUBLIC_KEY";
+    const EMAILJS_SERVICE_ID = "YOUR_SERVICE_ID";
+    const EMAILJS_TEMPLATE_ID = "YOUR_TEMPLATE_ID";
+    const SEND_TO_EMAIL = "recipient@example.com"; // where you want the email to go
+
+    /* ----------------- Loading Screen ----------------- */
+    const loadingScreen = document.getElementById("loadingScreen");
+    const mainCard = document.getElementById("mainCard");
+    const bar = document.getElementById("bar");
+    const pct = document.getElementById("pct");
+
+    let progress = 0;
+    const loadTimer = setInterval(() => {
+      // feels “cute” because it speeds up near the end
+      const bump = progress < 70 ? (2 + Math.random()*4) : (1 + Math.random()*2.5);
+      progress = Math.min(100, Math.round(progress + bump));
+      bar.style.width = progress + "%";
+      pct.textContent = progress + "%";
+
+      if (progress >= 100) {
+        clearInterval(loadTimer);
+        setTimeout(() => {
+          loadingScreen.classList.add("hide");
+          mainCard.classList.remove("hide");
+          // start heart rain once the main card appears
+          setHeartRate(18);
+        }, 380);
+      }
+    }, 90);
+
+    /* ----------------- Hearts rain generator ----------------- */
+    let heartInterval = null;
+
+    function spawnHeart(){
+      const h = document.createElement("div");
+      h.className = "heart";
+      // random horizontal position
+      h.style.left = (Math.random() * 100) + "vw";
+      // start below viewport so it rises through
+      h.style.top = (95 + Math.random()*30) + "vh";
+      // random size
+      const s = 10 + Math.random()*16;
+      h.style.width = s + "px";
+      h.style.height = s + "px";
+      // fix pseudo sizes by scaling instead of separate dimensions
+      h.style.transform = `rotate(45deg) scale(${s/16})`;
+
+      // random duration + delay (natural)
+      const dur = 6 + Math.random()*6;
+      h.style.animationDuration = dur + "s";
+      h.style.opacity = (0.18 + Math.random()*0.22).toFixed(2);
+
+      document.body.appendChild(h);
+      // cleanup
+      setTimeout(() => h.remove(), (dur+1)*1000);
+    }
+
+    function setHeartRate(perSecond){
+      if (heartInterval) clearInterval(heartInterval);
+      const ms = Math.max(30, Math.floor(1000 / perSecond));
+      heartInterval = setInterval(spawnHeart, ms);
+    }
+
+    /* ----------------- Main interactions ----------------- */
     const yesBtn = document.getElementById("yesBtn");
     const noBtn  = document.getElementById("noBtn");
     const result = document.getElementById("result");
@@ -195,29 +490,30 @@
     const title  = document.getElementById("title");
     const subtitle = document.getElementById("subtitle");
     const btnArea = document.getElementById("btnArea");
+    const tiny = document.getElementById("tiny");
 
-    // Personalize these:
-    const herName = "❤️";
+    const overlay = document.getElementById("overlay");
+    const closeLetter = document.getElementById("closeLetter");
+    const letterText = document.getElementById("letterText");
+
     const yesMessage = `OMG 🥹 you said YES!! My heart just did a little happy dance 💕`;
-    const noMessage  = `Are you sure?`;
+    const noMessage  = `Nice try 😭`;
 
     function popConfetti() {
-      const dots = 26;
+      const dots = 28;
       for (let i = 0; i < dots; i++) {
         const d = document.createElement("div");
         d.className = "dot";
-        const x = 30 + Math.random() * 80; // start around center area
-        const y = 80 + Math.random() * 20;
+        const x = 30 + Math.random() * 80;
+        const y = 75 + Math.random() * 25;
         d.style.left = x + "%";
         d.style.top  = y + "%";
 
-        // random movement
-        const dx = (Math.random() * 260 - 130) + "px";
-        const dy = (Math.random() * 240 - 180) + "px";
+        const dx = (Math.random() * 280 - 140) + "px";
+        const dy = (Math.random() * 260 - 190) + "px";
         d.style.setProperty("--dx", dx);
         d.style.setProperty("--dy", dy);
 
-        // random color (no library)
         const colors = ["#ff4d8d","#ff85b3","#ffd1e3","#ffcc66","#a7f3d0","#93c5fd"];
         d.style.background = colors[Math.floor(Math.random()*colors.length)];
 
@@ -226,48 +522,126 @@
       }
     }
 
-    yesBtn.addEventListener("click", () => {
+    function openLetter(){
+      overlay.classList.add("show");
+      overlay.setAttribute("aria-hidden","false");
+    }
+    function closeLetterFn(){
+      overlay.classList.remove("show");
+      overlay.setAttribute("aria-hidden","true");
+    }
+
+    closeLetter.addEventListener("click", closeLetterFn);
+    overlay.addEventListener("click", (e) => {
+      if (e.target === overlay) closeLetterFn();
+    });
+
+    // EmailJS optional loader (only if you set USE_EMAILJS = true)
+    function loadEmailJSScript(){
+      return new Promise((resolve, reject) => {
+        const s = document.createElement("script");
+        s.src = "https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js";
+        s.onload = () => resolve();
+        s.onerror = () => reject(new Error("EmailJS failed to load"));
+        document.head.appendChild(s);
+      });
+    }
+
+    async function sendEmailIfEnabled(){
+      if (!USE_EMAILJS) return { ok:true, skipped:true };
+
+      try{
+        if (!window.emailjs){
+          await loadEmailJSScript();
+        }
+        // init
+        emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+
+        const params = {
+          to_email: SEND_TO_EMAIL,
+          message: `${herName} said YES 💖`,
+          from_name: "Valentine Page"
+        };
+        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, params);
+        return { ok:true };
+      }catch(err){
+        return { ok:false, error: err?.message || String(err) };
+      }
+    }
+
+    yesBtn.addEventListener("click", async () => {
       title.textContent = "It’s a date!! 💘";
-      subtitle.textContent = "I’m smiling so hard right now.";
+      subtitle.textContent = `Okay ${herName}… you’re officially stuck with me 😌`;
       result.textContent = yesMessage;
+      tiny.textContent = "Opening something for you… 💌";
       popConfetti();
 
-      // disable the "No" button so the moment stays cute
+      // MORE hearts after yes
+      setHeartRate(34);
+
+      // lock no button
       noBtn.disabled = true;
       noBtn.style.opacity = 0.5;
       noBtn.style.cursor = "not-allowed";
+
+      // write letter message
+      letterText.textContent =
+        `Baby,\n\n` +
+        `I just wanna say… you make my days feel lighter, my smile feel easier, and my heart feel so safe. ` +
+        `I’m really grateful for you — for your vibe, your laugh, and the way you just *get* me. ` +
+        `So yeah… Valentine’s with you sounds perfect.\n\n` +
+        `Now come here and claim your date 😭💖\n\n` +
+        `— Yours`;
+
+      // send email (optional)
+      const send = await sendEmailIfEnabled();
+      if (send.ok && !send.skipped){
+        tiny.textContent = "Sent a little secret message 😉✅";
+      } else if (!send.ok){
+        tiny.textContent = "I tried sending the email but it failed (still YES tho 😭).";
+        console.log("Email error:", send.error);
+      } else {
+        tiny.textContent = "💌";
+      }
+
+      // show letter
+      setTimeout(openLetter, 650);
     });
 
-    // Make the "No" button dodge the cursor/taps (playful)
+    // No button dodge
     function moveNoButton() {
       const area = btnArea.getBoundingClientRect();
       const btn  = noBtn.getBoundingClientRect();
 
-      // keep inside the button area
       const maxX = area.width  - btn.width;
       const maxY = area.height - btn.height;
 
-      const x = Math.random() * maxX;
-      const y = Math.random() * maxY;
+      const x = Math.random() * Math.max(1, maxX);
+      const y = Math.random() * Math.max(1, maxY);
 
       noBtn.style.position = "absolute";
       noBtn.style.left = x + "px";
       noBtn.style.top  = y + "px";
     }
 
-    // desktop hover
-    noBtn.addEventListener("mouseenter", moveNoButton);
-    // mobile tap
+    noBtn.addEventListener("mouseenter", () => {
+      result.textContent = noMessage;
+      moveNoButton();
+    });
+
     noBtn.addEventListener("touchstart", (e) => {
       e.preventDefault();
+      result.textContent = noMessage;
       moveNoButton();
     }, { passive: false });
 
-    // If they somehow click it
     noBtn.addEventListener("click", () => {
       result.textContent = noMessage;
       moveNoButton();
     });
+
+    // Start with light hearts during loading (subtle)
+    setHeartRate(8);
   </script>
 </body>
 </html>
