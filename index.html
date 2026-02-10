@@ -224,9 +224,8 @@
       opacity:.65;
       z-index:2;
       position:relative;
+      white-space:pre-line;
     }
-
-    a { color: var(--pink); text-decoration: none; font-weight: 800; }
 
     /* ---------- LOVE MAIL MODAL ---------- */
     .mailOverlay{
@@ -258,7 +257,6 @@
       text-align:center;
     }
 
-    /* paper texture vibe */
     .mailCard:before{
       content:"";
       position:absolute; inset:0;
@@ -299,6 +297,14 @@
       to{opacity:1; transform: translateY(0)}
     }
 
+    /* Envelope fades away when letter shows */
+    .mailStage.fadeOut{
+      opacity:0;
+      transform: translateY(6px) scale(.98);
+      transition: opacity .25s ease, transform .25s ease;
+      pointer-events:none;
+    }
+
     .envelope{
       width:min(360px, 86vw);
       height: 220px;
@@ -328,14 +334,6 @@
       background: linear-gradient(135deg, #d1002a, #9a0020);
       clip-path: polygon(0 100%, 50% 40%, 100% 100%, 100% 0, 0 0);
       opacity:.92;
-    }
-    .env-front:after{
-      content:"";
-      position:absolute; inset:0;
-      background: linear-gradient(135deg, rgba(255,255,255,.10), rgba(0,0,0,.10));
-      clip-path: polygon(0 0, 50% 52%, 0 100%);
-      mix-blend-mode: overlay;
-      opacity:.55;
     }
     .env-side{
       position:absolute; inset:0;
@@ -377,14 +375,22 @@
       100%{ transform: scale(1); }
     }
 
-    /* Letter view inside modal */
+    /* Letter POP-UP effect */
     .letterWrap{
       margin-top: 18px;
-      display:none;
       position:relative;
       z-index:1;
+
+      opacity:0;
+      transform: translateY(10px) scale(.96);
+      pointer-events:none;
+      transition: opacity .25s ease, transform .25s ease;
     }
-    .letterWrap.show{ display:block; }
+    .letterWrap.show{
+      opacity:1;
+      transform: translateY(0) scale(1);
+      pointer-events:auto;
+    }
 
     .letterFrame{
       background: var(--paper);
@@ -485,7 +491,7 @@
 
     <div class="imgWrap">
       <img alt="Cute valentines image"
-        src="https://thumbs.dreamstime.com/z/adorable-watercolor-puppies-holding-bright-red-heart-surrounded-pink-hearts-valentine-s-day-concept-love-cuteness-435672263.jpg?ct=jpeg">
+           src="https://thumbs.dreamstime.com/z/adorable-watercolor-puppies-holding-bright-red-heart-surrounded-pink-hearts-valentine-s-day-concept-love-cuteness-435672263.jpg?ct=jpeg">
     </div>
 
     <h1 id="title">Will you be my Valentine? 💖</h1>
@@ -509,7 +515,7 @@
       <div class="mailStage" id="mailStage">
         <div class="envelope" id="envelope" aria-label="Open love letter" role="button" tabindex="0">
           <div class="env-back"></div>
-          <div class="flap" id="flap"></div>
+          <div class="flap"></div>
           <div class="env-front"></div>
           <div class="env-side"></div>
           <div class="shine"></div>
@@ -539,7 +545,7 @@
               I love you so much, My Valentine.
             </p>
 
-            <div class="signature">— The luckiest person in the world, from Mavi 💖 —</div>
+            <div class="signature">— The luckiest person in the world —</div>
 
             <button class="homeBtn" id="homeBtn" aria-label="Go back">
               <span class="homeIcon" aria-hidden="true"></span>
@@ -547,19 +553,20 @@
           </div>
         </div>
       </div>
+
     </div>
   </div>
 
   <script>
-    /* ----------------- SETTINGS YOU EDIT ----------------- */
+    /* ----------------- SETTINGS ----------------- */
     const herName = "baby";
 
-    // EmailJS (optional)
-    const USE_EMAILJS = True; // set true if you want to send email
+    // ✅ EmailJS (YOUR REAL VALUES)
+    const USE_EMAILJS = true;
     const EMAILJS_PUBLIC_KEY = "PoHcWJFQtoNSpQ4u0";
     const EMAILJS_SERVICE_ID = "service_q6g8sru";
     const EMAILJS_TEMPLATE_ID = "template_4fo0vqp";
-    const SEND_TO_EMAIL = "Kalyaninair2004@gmail.com";
+    const SEND_TO_EMAIL = "kalyaninair2004@gmail.com";
 
     /* ----------------- Loading Screen ----------------- */
     const loadingScreen = document.getElementById("loadingScreen");
@@ -624,6 +631,7 @@
 
     /* Love mail elements */
     const mailOverlay = document.getElementById("mailOverlay");
+    const mailStage = document.getElementById("mailStage");
     const envelope = document.getElementById("envelope");
     const letterWrap = document.getElementById("letterWrap");
     const homeBtn = document.getElementById("homeBtn");
@@ -657,17 +665,15 @@
     function openMail(){
       mailOverlay.classList.add("show");
       mailOverlay.setAttribute("aria-hidden","false");
-      // ensure envelope/letter start state
+
+      // reset state every time
       envelope.classList.remove("open");
+      mailStage.classList.remove("fadeOut");
       letterWrap.classList.remove("show");
     }
     function closeMail(){
       mailOverlay.classList.remove("show");
       mailOverlay.setAttribute("aria-hidden","true");
-      setTimeout(() => {
-        envelope.classList.remove("open");
-        letterWrap.classList.remove("show");
-      }, 150);
     }
 
     // Click outside closes
@@ -679,7 +685,9 @@
       envelope.classList.add("open");
       envelope.classList.add("pulse");
 
+      // flap opens, then fade envelope away + pop letter
       setTimeout(() => {
+        mailStage.classList.add("fadeOut");
         letterWrap.classList.add("show");
       }, 450);
 
@@ -687,8 +695,8 @@
     }
 
     homeBtn.addEventListener("click", () => {
-      // go back to envelope view
       letterWrap.classList.remove("show");
+      mailStage.classList.remove("fadeOut");
       setTimeout(() => envelope.classList.remove("open"), 150);
     });
 
@@ -700,7 +708,7 @@
       }
     });
 
-    // EmailJS optional loader
+    // EmailJS loader
     function loadEmailJSScript(){
       return new Promise((resolve, reject) => {
         const s = document.createElement("script");
@@ -711,36 +719,35 @@
       });
     }
 
-   async function sendEmailIfEnabled(){
-  if (!USE_EMAILJS) return { ok:true, skipped:true };
+    async function sendEmailIfEnabled(){
+      if (!USE_EMAILJS) return { ok:true, skipped:true };
 
-  try{
-    if (!window.emailjs){
-      await loadEmailJSScript();
-    }
+      try{
+        if (!window.emailjs){
+          await loadEmailJSScript();
+        }
 
-    emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+        emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
 
-    const params = {
-      to_email: SEND_TO_EMAIL,
-      message:
+        const params = {
+          to_email: SEND_TO_EMAIL,
+          message:
 `Hi baby 💕
 
 Just letting you know that February 14 is officially OUR date 😌❤️
 Can’t wait to see you.
 
 — Your Valentine 💌`
-    };
+        };
 
-    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, params);
+        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, params);
+        return { ok:true };
 
-    return { ok:true };
-
-  }catch(err){
-    console.error("EmailJS error:", err);
-    return { ok:false };
-  }
-}
+      }catch(err){
+        console.error("EmailJS error:", err);
+        return { ok:false, error: err?.text || err?.message || String(err) };
+      }
+    }
 
     yesBtn.addEventListener("click", async () => {
       title.textContent = "It’s a date!! 💘";
@@ -748,8 +755,6 @@ Can’t wait to see you.
       result.textContent = yesMessage;
       tiny.textContent = "Opening something for you… 💌";
       popConfetti();
-
-      // MORE hearts after yes
       setHeartRate(34);
 
       // lock no button
@@ -757,18 +762,16 @@ Can’t wait to see you.
       noBtn.style.opacity = 0.5;
       noBtn.style.cursor = "not-allowed";
 
-      // send email (optional)
       const send = await sendEmailIfEnabled();
       if (send.ok && !send.skipped){
-        tiny.textContent = "Sent a little secret message 😉✅";
+        tiny.textContent = "Sent 💌 (check inbox/spam)";
       } else if (!send.ok){
-        tiny.textContent = "I tried sending the email but it failed (still YES tho 😭).";
+        tiny.textContent = "Email failed 😭 open Console to see why.";
         console.log("Email error:", send.error);
       } else {
         tiny.textContent = "💌";
       }
 
-      // show mail modal (envelope fades in automatically)
       setTimeout(openMail, 650);
     });
 
@@ -792,19 +795,17 @@ Can’t wait to see you.
       result.textContent = noMessage;
       moveNoButton();
     });
-
     noBtn.addEventListener("touchstart", (e) => {
       e.preventDefault();
       result.textContent = noMessage;
       moveNoButton();
-    }, { passive: false });
-
+    }, { passive:false });
     noBtn.addEventListener("click", () => {
       result.textContent = noMessage;
       moveNoButton();
     });
 
-    // Start with light hearts during loading (subtle)
+    // Start light hearts during loading
     setHeartRate(8);
 
     // ESC closes mail
