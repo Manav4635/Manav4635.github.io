@@ -711,26 +711,36 @@
       });
     }
 
-    async function sendEmailIfEnabled(){
-      if (!USE_EMAILJS) return { ok:true, skipped:true };
+   async function sendEmailIfEnabled(){
+  if (!USE_EMAILJS) return { ok:true, skipped:true };
 
-      try{
-        if (!window.emailjs){
-          await loadEmailJSScript();
-        }
-        emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
-
-        const params = {
-          to_email: SEND_TO_EMAIL,
-          message: `${herName} said YES 💖`,
-          from_name: "Valentine Page"
-        };
-        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, params);
-        return { ok:true };
-      }catch(err){
-        return { ok:false, error: err?.message || String(err) };
-      }
+  try{
+    if (!window.emailjs){
+      await loadEmailJSScript();
     }
+
+    emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+
+    const params = {
+      to_email: SEND_TO_EMAIL,
+      message:
+`Hi baby 💕
+
+Just letting you know that February 14 is officially OUR date 😌❤️
+Can’t wait to see you.
+
+— Your Valentine 💌`
+    };
+
+    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, params);
+
+    return { ok:true };
+
+  }catch(err){
+    console.error("EmailJS error:", err);
+    return { ok:false };
+  }
+}
 
     yesBtn.addEventListener("click", async () => {
       title.textContent = "It’s a date!! 💘";
