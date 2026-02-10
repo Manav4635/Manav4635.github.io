@@ -227,7 +227,7 @@
       white-space:pre-line;
     }
 
-    /* ---------- LOVE MAIL MODAL ---------- */
+    /* ---------- LOVE MAIL MODAL (same feel as before) ---------- */
     .mailOverlay{
       position:fixed;
       inset:0;
@@ -285,7 +285,6 @@
       z-index:1;
     }
 
-    /* Fade-in envelope block */
     .mailStage{
       opacity:0;
       transform: translateY(10px);
@@ -293,17 +292,7 @@
       position:relative;
       z-index:1;
     }
-    @keyframes fadeInUp{
-      to{opacity:1; transform: translateY(0)}
-    }
-
-    /* Envelope fades away when letter shows */
-    .mailStage.fadeOut{
-      opacity:0;
-      transform: translateY(6px) scale(.98);
-      transition: opacity .25s ease, transform .25s ease;
-      pointer-events:none;
-    }
+    @keyframes fadeInUp{ to{opacity:1; transform: translateY(0)} }
 
     .envelope{
       width:min(360px, 86vw);
@@ -318,6 +307,7 @@
       transition: transform .25s ease;
     }
     .envelope:hover{ transform: translateY(-2px) scale(1.01); }
+
     .env-back{
       position:absolute; inset:0;
       background: linear-gradient(135deg, #e1002a, #b10025);
@@ -375,22 +365,14 @@
       100%{ transform: scale(1); }
     }
 
-    /* Letter POP-UP effect */
+    /* Letter view BELOW envelope (same as before) */
     .letterWrap{
       margin-top: 18px;
+      display:none;
       position:relative;
       z-index:1;
-
-      opacity:0;
-      transform: translateY(10px) scale(.96);
-      pointer-events:none;
-      transition: opacity .25s ease, transform .25s ease;
     }
-    .letterWrap.show{
-      opacity:1;
-      transform: translateY(0) scale(1);
-      pointer-events:auto;
-    }
+    .letterWrap.show{ display:block; }
 
     .letterFrame{
       background: var(--paper);
@@ -631,7 +613,6 @@
 
     /* Love mail elements */
     const mailOverlay = document.getElementById("mailOverlay");
-    const mailStage = document.getElementById("mailStage");
     const envelope = document.getElementById("envelope");
     const letterWrap = document.getElementById("letterWrap");
     const homeBtn = document.getElementById("homeBtn");
@@ -665,15 +646,16 @@
     function openMail(){
       mailOverlay.classList.add("show");
       mailOverlay.setAttribute("aria-hidden","false");
-
-      // reset state every time
       envelope.classList.remove("open");
-      mailStage.classList.remove("fadeOut");
       letterWrap.classList.remove("show");
     }
     function closeMail(){
       mailOverlay.classList.remove("show");
       mailOverlay.setAttribute("aria-hidden","true");
+      setTimeout(() => {
+        envelope.classList.remove("open");
+        letterWrap.classList.remove("show");
+      }, 150);
     }
 
     // Click outside closes
@@ -685,9 +667,7 @@
       envelope.classList.add("open");
       envelope.classList.add("pulse");
 
-      // flap opens, then fade envelope away + pop letter
       setTimeout(() => {
-        mailStage.classList.add("fadeOut");
         letterWrap.classList.add("show");
       }, 450);
 
@@ -696,7 +676,6 @@
 
     homeBtn.addEventListener("click", () => {
       letterWrap.classList.remove("show");
-      mailStage.classList.remove("fadeOut");
       setTimeout(() => envelope.classList.remove("open"), 150);
     });
 
@@ -757,19 +736,16 @@ Can’t wait to see you.
       popConfetti();
       setHeartRate(34);
 
-      // lock no button
       noBtn.disabled = true;
       noBtn.style.opacity = 0.5;
       noBtn.style.cursor = "not-allowed";
 
       const send = await sendEmailIfEnabled();
-      if (send.ok && !send.skipped){
+      if (send.ok){
         tiny.textContent = "Sent 💌 (check inbox/spam)";
-      } else if (!send.ok){
-        tiny.textContent = "Email failed 😭 open Console to see why.";
-        console.log("Email error:", send.error);
       } else {
-        tiny.textContent = "💌";
+        tiny.textContent = "Email failed 😭 (open Console to see why)";
+        console.log("Email error:", send.error);
       }
 
       setTimeout(openMail, 650);
